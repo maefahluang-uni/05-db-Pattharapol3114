@@ -15,7 +15,7 @@ In UserRepository, declare the following methods that help to find all user and 
 - `data.sql` contains insert statements for dummy users. Find where this file is and explain what it is used for? 
 
 ```
-Your answer
+data.sql is located in src/main/resources/. It is used to initialize the H2 database with dummy user records when the application starts, so tests and sample queries have data to work with.
 ```
 
 ## User Reservice - Complete the code

@@ -1,9 +1,11 @@
 package th.mfu.boot;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,29 +29,50 @@ public class UserController {
     public ResponseEntity<String> registerUser(@RequestBody User user) {
 
         //TODO: check if user with the username exists
-       
+        User existing = repo.findByUsername(user.getUsername());
+        if (existing != null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists");
+        }
+
         //TODO: save the user
+         User savedUser = repo.save(user);
 
         //TODO: remove below and return proper status
-        return new ResponseEntity<>( HttpStatus.NOT_IMPLEMENTED);
+        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
     }
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> list() {
         
-        //TODO: remove below and return proper result
-        return new ResponseEntity<>( HttpStatus.NOT_IMPLEMENTED);
+        List<User> users = repo.findAll();
+        // TODO: remove below and return proper result
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<User> getUser(@PathVariable String username) {
+        User user = repo.findByUsername(username);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        }
+        return ResponseEntity.ok(user);
     }
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         
         //TODO: check if user with the id exists
+        Optional<User> userOpt = repo.findById(id);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
        
         //TODO: delete the user
+        repo.deleteById(id);
     
         //TODO: remove below and return proper status
-        return new ResponseEntity<>( HttpStatus.NOT_IMPLEMENTED);
+        return ResponseEntity.ok("User deleted successfully");
     }
 
 
